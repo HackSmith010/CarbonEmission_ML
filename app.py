@@ -5,15 +5,14 @@ import joblib
 from flask_cors import CORS
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+from collections import OrderedDict
 
 app = Flask(__name__)
 CORS(app)
 
-# 🔹 Load the classification model and encoders
 classification_model = joblib.load("carbon_model.pkl")
 encoders = joblib.load("encoders.pkl")
 
-# 🔹 Load or train the prediction model
 def load_data():
     data = {
         "year": [2020, 2021, 2022, 2023, 2024],
@@ -37,13 +36,12 @@ def train_prediction_model():
 
 train_prediction_model()
 
-# 🔹 Scope Classification Route
 @app.route("/predict", methods=["POST"])
 def classify_scope():
     try:
         data = request.get_json()
         if isinstance(data, dict):  
-            data = [data]  # Convert single JSON object to a list
+            data = [data]  
         
         df = pd.DataFrame(data)
 
@@ -85,7 +83,7 @@ def predict_future():
         year = data.get("year")
         energy_consumption = data.get("energy_consumption")
 
-        if not year or not energy_consumption:
+        if year is None or energy_consumption is None:
             return jsonify({"error": "Missing 'year' or 'energy_consumption'"}), 400
 
         input_df = pd.DataFrame([[year, energy_consumption]], columns=["year", "energy_consumption"])
@@ -96,22 +94,26 @@ def predict_future():
         monthly_distribution = np.random.normal(loc=1, scale=0.05, size=12)
         monthly_distribution = monthly_distribution / monthly_distribution.sum()
 
-        monthly_emissions = {month: round(predicted_total_emission * weight, 2)
-                             for month, weight in zip(
-                                 ["January", "February", "March", "April", "May", "June",
-                                  "July", "August", "September", "October", "November", "December"],
-                                 monthly_distribution)}
+        months = ["January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"]
+        
+        # 🔹 Use OrderedDict to preserve month order
+        monthly_emissions = OrderedDict(
+            (month, round(predicted_total_emission * weight, 2))
+            for month, weight in zip(months, monthly_distribution)
+        )
 
         response = {
-            "year": year,
             "predicted_monthly_emission": monthly_emissions,
-            "total_predicted_emission": round(predicted_total_emission, 2)
+            "total_predicted_emission": round(predicted_total_emission, 2),
+            "year": year
         }
 
         return jsonify(response)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route("/", methods=["GET"])
 def home():
