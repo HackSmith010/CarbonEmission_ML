@@ -1,3 +1,4 @@
 .venv
 carbon_model.pkl
 encoders.pkl
+emission_predictor.pkl
