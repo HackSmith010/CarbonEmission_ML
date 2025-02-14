@@ -1,0 +1,54 @@
+{
+    "source_type": "Vehicle",
+    "ownership": "Owned",
+    "activity_type": "Fuel Combustion",
+    "energy_consumption": 1200,
+    "fuel_type": "Diesel",
+    "transport_distance": 150,
+    "emission_factor": 2.5
+} 
+// scope 1
+
+Supplier's Product Manufacturing Emissions
+
+{
+    "source_type": "Supplier",
+    "ownership": "Third-Party",
+    "activity_type": "Purchased Goods",
+    "energy_consumption": 3000,
+    "fuel_type": "N/A",
+    "transport_distance": 500,
+    "emission_factor": 1.7
+}
+//Scope 3
+
+
+Outsourced Transportation Service
+
+{
+    "source_type": "Vehicle",
+    "ownership": "Third-Party",
+    "activity_type": "Transport Services",
+    "energy_consumption": 700,
+    "fuel_type": "Petrol",
+    "transport_distance": 400,
+    "emission_factor": 2.5
+}
+
+
+//scope 3
+
+
+Office Electricity Consumption
+
+{
+    "source_type": "Electricity",
+    "ownership": "Purchased",
+    "activity_type": "Power Usage",
+    "energy_consumption": 5000,
+    "fuel_type": "Grid",
+    "transport_distance": 0,
+    "emission_factor": 0.4
+}
+
+//scope 2
